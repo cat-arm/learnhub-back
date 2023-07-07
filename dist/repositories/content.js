@@ -14,26 +14,29 @@ function newRepositoryContent(db) {
 exports.newRepositoryContent = newRepositoryContent;
 class RepositoryContent {
     constructor(db) {
+        this.includePostedBy = {
+            postedBy: {
+                select: {
+                    id: true,
+                    username: true,
+                    name: true,
+                    registeredAt: true,
+                    updateAt: true,
+                    contents: true,
+                    password: false,
+                },
+            },
+        };
         this.db = db;
     }
     async getContents() {
-        return await this.db.content.findMany();
+        return await this.db.content.findMany({
+            include: this.includePostedBy,
+        });
     }
     async createContent(arg) {
         return await this.db.content.create({
-            include: {
-                postedBy: {
-                    select: {
-                        id: true,
-                        username: true,
-                        name: true,
-                        registeredAt: true,
-                        updateAt: true,
-                        contents: true,
-                        password: false,
-                    },
-                },
-            },
+            include: this.includePostedBy,
             data: {
                 ...arg,
                 ownerId: undefined,
@@ -48,6 +51,7 @@ class RepositoryContent {
     async getContentById(id) {
         return await this.db.content.findUnique({
             where: { id },
+            include: this.includePostedBy,
         });
     }
     async updateUserContentById(arg) {
@@ -62,6 +66,7 @@ class RepositoryContent {
         }
         return await this.db.content.update({
             where: { id: arg.id },
+            include: this.includePostedBy,
             data: {
                 comment: arg.comment,
                 rating: arg.rating,
@@ -80,6 +85,7 @@ class RepositoryContent {
         }
         return await this.db.content.delete({
             where: { id: arg.id },
+            include: this.includePostedBy,
         });
     }
 }

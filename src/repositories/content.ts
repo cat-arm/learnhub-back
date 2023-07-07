@@ -7,7 +7,11 @@ deleteusercontentbyid
 */
 
 import { PrismaClient } from "@prisma/client";
-import { IContent, ICreateContent } from "../entities/content";
+import {
+  IContent,
+  IContentWithUser,
+  ICreateContent,
+} from "../entities/content";
 
 export function newRepositoryContent(db: PrismaClient) {
   return new RepositoryContent(db);
@@ -19,25 +23,29 @@ class RepositoryContent {
     this.db = db;
   }
 
-  async getContents(): Promise<IContent[]> {
-    return await this.db.content.findMany();
+  includePostedBy = {
+    postedBy: {
+      select: {
+        id: true,
+        username: true,
+        name: true,
+        registeredAt: true,
+        updateAt: true,
+        contents: true,
+        password: false,
+      },
+    },
+  };
+
+  async getContents(): Promise<IContentWithUser[]> {
+    return await this.db.content.findMany({
+      include: this.includePostedBy,
+    });
   }
 
   async createContent(arg: ICreateContent): Promise<IContent> {
     return await this.db.content.create({
-      include: {
-        postedBy: {
-          select: {
-            id: true,
-            username: true,
-            name: true,
-            registeredAt: true,
-            updateAt: true,
-            contents: true,
-            password: false,
-          },
-        },
-      },
+      include: this.includePostedBy,
       data: {
         ...arg,
         ownerId: undefined,
@@ -53,6 +61,7 @@ class RepositoryContent {
   async getContentById(id: number): Promise<IContent | null> {
     return await this.db.content.findUnique({
       where: { id },
+      include: this.includePostedBy,
     });
   }
 
@@ -75,6 +84,7 @@ class RepositoryContent {
 
     return await this.db.content.update({
       where: { id: arg.id },
+      include: this.includePostedBy,
       data: {
         comment: arg.comment,
         rating: arg.rating,
@@ -99,6 +109,7 @@ class RepositoryContent {
 
     return await this.db.content.delete({
       where: { id: arg.id },
+      include: this.includePostedBy,
     });
   }
 }

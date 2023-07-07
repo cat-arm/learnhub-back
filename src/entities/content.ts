@@ -24,5 +24,5 @@ export interface IContent extends ICreateContent {
 }
 
 export interface IContentWithUser extends IContent {
-  user: IUserDto;
+  postedBy: IUserDto;
 }
