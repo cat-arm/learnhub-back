@@ -21,7 +21,7 @@ export function newJwt(payload: Payload): string {
 
 export interface JwtAuthRequest<Params, Body>
   extends Request<Params, any, Body> {
-  token: string;
+  accessToken: string;
   payload: Payload;
 }
 
@@ -66,7 +66,7 @@ export class HandlerMiddleware {
           .end();
       }
 
-      req.token = token;
+      req.accessToken = token;
       req.payload = {
         id,
         username,

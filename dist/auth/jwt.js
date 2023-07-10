@@ -46,7 +46,7 @@ class HandlerMiddleware {
                     .json({ error: "missing payload username" })
                     .end();
             }
-            req.token = token;
+            req.accessToken = token;
             req.payload = {
                 id,
                 username,

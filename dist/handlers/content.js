@@ -18,9 +18,10 @@ class HandlerContent {
         this.repo = repo;
     }
     async getContents(req, res) {
+        // not sure
         return this.repo
             .getContents()
-            .then((contents) => res.status(200).json(contents).end())
+            .then((contents) => res.status(200).json({ data: contents }).end())
             .catch((err) => {
             console.error(`failed to create todo: ${err}`);
             return res.status(500).json({ error: `failed to get todos` }).end();
