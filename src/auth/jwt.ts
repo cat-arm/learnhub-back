@@ -9,14 +9,6 @@ export interface Payload {
   username: string;
 }
 
-export function cookieSession(payload: Payload): string {
-  return cookieSession(payload, secret, {
-    name: 'session',
-    keys: [secret],
-  maxAge: 12 * 60 * 60 * 1000
-  });
-}
-
 export interface JwtAuthRequest<Params, Body>
   extends Request<Params, any, Body> {
   accessToken: string;
