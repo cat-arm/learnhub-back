@@ -9,13 +9,11 @@ export interface Payload {
   username: string;
 }
 
-export function newJwt(payload: Payload): string {
-  return jwt.sign(payload, secret, {
-    algorithm: "HS512",
-    expiresIn: "12h",
-    issuer: "express-demo",
-    subject: "user-login",
-    audience: "user",
+export function cookieSession(payload: Payload): string {
+  return cookieSession(payload, secret, {
+    name: 'session',
+    keys: [secret],
+  maxAge: 12 * 60 * 60 * 1000
   });
 }
 
