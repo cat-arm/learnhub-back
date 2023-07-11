@@ -11,26 +11,28 @@ datasource db {
 }
 
 model Content {
-  id           Int      @id @default(autoincrement())
-  videoTitle   String
-  videoUrl     String   @unique
-  comment      String   @db.VarChar(280)
-  rating       Int      @default(0)
-  thumbnailUrl String
-  creatorName  String
-  creatorUrl   String
-  postedBy     User     @relation(fields: [ownerId], references: [id], onDelete: Cascade)
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
-  ownerId      String
+  id Int @id @default(autoincrement())
+  videoTitle String
+  videoUrl String @unique
+  comment String @db.VarChar(280)
+  rating Int @default(0)
+  thumbnailUrl String @unique
+  creatorName String
+  creatorUrl String @unique
+  postedBy User @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  ownerId String
 }
 
 model User {
-  id           String    @id @default(uuid())
-  password     String
-  username     String    @unique
-  name         String
-  registeredAt DateTime  @default(now())
-  updateAt     DateTime  @updatedAt
-  contents     Content[]
+  id String @id @default(uuid())
+  password String 
+  username String @unique
+  name String
+  registeredAt DateTime @default(now())
+  updateAt DateTime @updatedAt
+  contents Content[]
 }
+
+

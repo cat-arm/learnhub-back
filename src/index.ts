@@ -9,7 +9,6 @@ deleteusercontentbyid
 import { PrismaClient } from "@prisma/client";
 import { createClient } from "redis";
 import express from "express";
-import cors from "cors"
 
 import { newRepositoryUser } from "./repositories/user";
 import { newRepositoryContent } from "./repositories/content";
@@ -47,7 +46,6 @@ async function main() {
   const contentRouter = express.Router();
 
   server.use(express.json());
-  server.use(cors())
   server.use("/user", userRouter);
   server.use("/content", contentRouter);
 
@@ -59,7 +57,7 @@ async function main() {
   // User API
 
   userRouter.post("/register", handlerUser.register.bind(handlerUser));
-  userRouter.post("/login", handlerUser.login.bind(handlerUser));
+  userRouter.get("/login", handlerUser.login.bind(handlerUser));
   userRouter.get(
     "/logout",
     handlerMiddleware.jwtMiddleware.bind(handlerMiddleware),
@@ -69,14 +67,14 @@ async function main() {
   // Content API
   server.get("/", handlerContent.getContents.bind(handlerContent));
   server.post(
-    "/",
+    "/new",
     handlerMiddleware.jwtMiddleware.bind(handlerMiddleware),
     handlerContent.createContent.bind(handlerContent)
   );
 
   contentRouter.get("/:id", handlerContent.getContentById.bind(handlerContent));
   contentRouter.patch(
-    "/:id",
+    "/:id/edit",
     handlerMiddleware.jwtMiddleware.bind(handlerMiddleware),
     handlerContent.updateUserContentById.bind(handlerContent)
   );

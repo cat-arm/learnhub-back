@@ -11,7 +11,7 @@ export interface Payload {
 
 export interface JwtAuthRequest<Params, Body>
   extends Request<Params, any, Body> {
-  accessToken: string;
+  token: string;
   payload: Payload;
 }
 
@@ -56,7 +56,7 @@ export class HandlerMiddleware {
           .end();
       }
 
-      req.accessToken = token;
+      req.token = token;
       req.payload = {
         id,
         username,

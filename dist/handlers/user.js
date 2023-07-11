@@ -58,8 +58,7 @@ class handlerUser {
             if (!(0, bcrypt_1.compareHash)(password, user.password)) {
                 return res
                     .status(401)
-                    .json({ statusCode: 401,
-                    error: "invalid username or password" })
+                    .json({ error: "invalid username or password" })
                     .end();
             }
             const payload = { id: user.id, username: user.username };
@@ -70,7 +69,7 @@ class handlerUser {
                 status: "logged in",
                 id: user.id,
                 username,
-                accessToken: token,
+                token,
             })
                 .end();
         })
@@ -81,12 +80,12 @@ class handlerUser {
     }
     async logout(req, res) {
         return await this.repoBlacklist
-            .addToBlacklist(req.accessToken)
-            .then(() => res.status(200).json({ status: `logged out`, token: req.accessToken }).end())
+            .addToBlacklist(req.token)
+            .then(() => res.status(200).json({ status: `logged out`, token: req.token }).end())
             .catch((err) => {
             return res
                 .status(500)
-                .json({ error: `could not log out with token ${req.accessToken}` })
+                .json({ error: `could not log out with token ${req.token}` })
                 .end();
         });
     }

@@ -13,7 +13,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const client_1 = require("@prisma/client");
 const redis_1 = require("redis");
 const express_1 = __importDefault(require("express"));
-const cors_1 = __importDefault(require("cors"));
 const user_1 = require("./repositories/user");
 const content_1 = require("./repositories/content");
 const blacklist_1 = require("./repositories/blacklist");
@@ -42,7 +41,6 @@ async function main() {
     const userRouter = express_1.default.Router();
     const contentRouter = express_1.default.Router();
     server.use(express_1.default.json());
-    server.use((0, cors_1.default)());
     server.use("/user", userRouter);
     server.use("/content", contentRouter);
     // check server status
@@ -51,13 +49,13 @@ async function main() {
     // });
     // User API
     userRouter.post("/register", handlerUser.register.bind(handlerUser));
-    userRouter.post("/login", handlerUser.login.bind(handlerUser));
+    userRouter.get("/login", handlerUser.login.bind(handlerUser));
     userRouter.get("/logout", handlerMiddleware.jwtMiddleware.bind(handlerMiddleware), handlerUser.logout.bind(handlerUser));
     // Content API
     server.get("/", handlerContent.getContents.bind(handlerContent));
-    server.post("/", handlerMiddleware.jwtMiddleware.bind(handlerMiddleware), handlerContent.createContent.bind(handlerContent));
+    server.post("/new", handlerMiddleware.jwtMiddleware.bind(handlerMiddleware), handlerContent.createContent.bind(handlerContent));
     contentRouter.get("/:id", handlerContent.getContentById.bind(handlerContent));
-    contentRouter.patch("/:id", handlerMiddleware.jwtMiddleware.bind(handlerMiddleware), handlerContent.updateUserContentById.bind(handlerContent));
+    contentRouter.patch("/:id/edit", handlerMiddleware.jwtMiddleware.bind(handlerMiddleware), handlerContent.updateUserContentById.bind(handlerContent));
     contentRouter.delete("/:id", handlerMiddleware.jwtMiddleware.bind(handlerMiddleware), handlerContent.deleteUserContentById.bind(handlerContent));
     server.listen(port, () => console.log(`server listener on ${port}`));
 }
